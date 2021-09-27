@@ -6,6 +6,7 @@ from flask import jsonify, request
 
 from app.config import app, Config
 from app.utils import verify_auth_token, generate_auth_token
+from app.models import db
 
 
 def error(msg, code=400):
@@ -44,7 +45,7 @@ def hello():
     return jsonify(res('hello'))
 
 
-@app.route("/api/getDirLs")
+@app.route("/api/getDirLs", methods=["GET"])
 @login_required
 def getDirLs():
     ls = ['1.txt', 'dir1', '']
@@ -75,3 +76,18 @@ def login():
         return jsonify(res(token))
     else:
         return jsonify(error("auth error"))
+
+
+@app.route('/api/create_pool', methods=['POST'])
+def create_pool():
+    info = request.data
+    info = json.loads(info)
+    pool, pool_id, _type, area = info.get('pool_name'), info.get('pool_id'), info.get('type'), info.get('area')
+    ret = db.create_pool(pool_id, pool, _type, area)
+    if ret:
+        return jsonify(res('ok'))
+    else:
+        if ret is None:
+            return jsonify(error('server error'))
+        elif ret is False:
+            return jsonify(error('wrong'))

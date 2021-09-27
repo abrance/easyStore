@@ -24,6 +24,16 @@ class Config(object):
     upload_path = str(root_path/'upload')
     print(upload_path)
 
+    dbn = "mysql"
+    mysql_engine = 'pymysql'
+    user = 'store'
+    password = '123456'
+    host = 'localhost'
+    port = '3306'
+    db = 'store'
+    db_conn_str = '{}+{}://{}:{}@{}:{}/{}?charset=utf8mb4'.\
+        format(dbn, mysql_engine, user, password, host, port, db)
+
 
 app = Flask(__name__, static_folder=Config.static_path)
 CORS(app, supports_credentials=True)
